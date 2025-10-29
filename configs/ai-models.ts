@@ -7,7 +7,7 @@ import { Env } from "./BaseEnvironment";
 const genAI = new GoogleGenerativeAI(Env.GOOGLE_GEMINI_API_KEY);
 
 // ✅ Use correct model version
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // ✅ Helper function for generating AI responses
 export async function generateAIResponse(prompt: string): Promise<string> {

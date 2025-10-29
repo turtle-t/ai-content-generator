@@ -10,20 +10,23 @@ import { Badge } from "@/components/ui/badge";
 import SkeletonLoading from "../_components/SkeletonLoading";
 
 const ExplorePage = () => {
-  const [courseList, setCourseList] = useState<CourseType[] | null>(null);
+  const [courseList, setCourseList] = useState<CourseType[]>([]);
   const [pageIndex, setPageIndex] = useState(0);
 
   const getAllCourses = async () => {
-    const result = await db
-      .select()
-      .from(CourseList)
-      .limit(8)
-      .offset(pageIndex * 8);
-    // console.log(result);
-    setCourseList(result as CourseType[]);
-  };
+    try {
+      const result = await db
+        .select()
+        .from(CourseList)
+        .limit(8)
+        .offset(pageIndex * 8);
 
-  // console.log(courseList);
+      setCourseList(result as CourseType[]);
+    } catch (error) {
+      console.error("Failed to fetch courses:", error);
+      setCourseList([]); // prevent crash
+    }
+  };
 
   useEffect(() => {
     getAllCourses();
@@ -33,11 +36,11 @@ const ExplorePage = () => {
   return (
     <div>
       <h2 className="font-bold text-3xl">Explore More Courses</h2>
-      <p>Explore courses build with AI by Other Users</p>
+      <p>Explore courses built with AI by other users</p>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5">
-        {courseList ? (
-          courseList?.map((course) => (
+        {courseList.length > 0 ? (
+          courseList.map((course) => (
             <div key={course.courseId}>
               <CourseCard
                 course={course}
@@ -53,15 +56,15 @@ const ExplorePage = () => {
 
       <div className="flex justify-between mt-5 items-center">
         <Button
-          onClick={() => setPageIndex(pageIndex - 1)}
-          disabled={pageIndex == 0}
+          onClick={() => setPageIndex((prev) => Math.max(prev - 1, 0))}
+          disabled={pageIndex === 0}
         >
           Prev
         </Button>
         <Badge>Page : {pageIndex + 1}</Badge>
         <Button
-          onClick={() => setPageIndex(pageIndex + 1)}
-          disabled={courseList?.length !== 8}
+          onClick={() => setPageIndex((prev) => prev + 1)}
+          disabled={courseList.length < 8}
         >
           Next
         </Button>

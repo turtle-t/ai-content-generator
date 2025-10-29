@@ -8,11 +8,13 @@ import Link from "next/link";
 
 const Header = () => {
   const { user } = useUser();
+
   return (
     <div className="flex justify-between items-center p-5 shadow-sm">
-      <div className="flex items-center gap-10">
+      <div className="flex items-center gap-6">
+        {/* Logo */}
         <Image
-          src={"/logo.png"}
+          src="/logo.png"
           alt="logo"
           width={150}
           height={100}
@@ -20,21 +22,24 @@ const Header = () => {
           className="object-cover"
         />
 
-        {/* 🔹 Added Navigation Buttons */}
-        <div className="flex gap-6">
-          <Link href="/">
-            <Button variant="ghost">Home</Button>
+        {/* ✅ Two Top Buttons */}
+        <div className="flex gap-4">
+          <Link
+            href="https://ai-coaching-voice-agent.vercel.app/mock-test"
+            target="_blank"
+          >
+            <Button variant="ghost">Mock Test</Button>
           </Link>
-          <Link href="/courses">
-            <Button variant="ghost">Courses</Button>
-          </Link>
-          <Link href="/about">
-            <Button variant="ghost">About</Button>
+          <Link
+            href="https://ai-coaching-voice-agent.vercel.app/dashboard"
+            target="_blank"
+          >
+            <Button variant="ghost">Med Help</Button>
           </Link>
         </div>
       </div>
 
-      {/* 🔹 Right Side Auth Buttons (unchanged) */}
+      {/* Existing Auth Buttons (unchanged) */}
       {!user ? (
         <Link href="/sign-up">
           <ShinyButton text="Sign Up" />
@@ -49,6 +54,3 @@ const Header = () => {
 };
 
 export default Header;
-
-
-

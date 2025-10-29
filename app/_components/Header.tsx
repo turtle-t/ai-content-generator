@@ -25,13 +25,13 @@ const Header = () => {
         {/* ✅ Two Top Buttons */}
         <div className="flex gap-4">
           <Link
-            href="https://ai-coaching-voice-agent.vercel.app/mock-test"
+             href="https://ai-coaching-voice-agent.vercel.app/dashboard"
             target="_blank"
           >
             <Button variant="ghost">Mock Test</Button>
           </Link>
           <Link
-            href="https://ai-coaching-voice-agent.vercel.app/dashboard"
+            href="https://med-agent-turtle.vercel.app/"
             target="_blank"
           >
             <Button variant="ghost">Med Help</Button>

@@ -4,7 +4,8 @@ import { useState } from "react";
 import { v4 as uuid4 } from "uuid";
 import { useUser } from "@clerk/nextjs";
 import { generateCourseLayout } from "@/configs/ai-models";
-import { storeDataInDatabase } from "@/utils/storeDataInDatabase";
+import { storeDataInDatabase } from "@/app/_utils/saveDataInDb";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";

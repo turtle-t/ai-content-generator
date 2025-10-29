@@ -11,56 +11,44 @@ export const generateCourseContent = async (
   setLoading(true);
 
   try {
-    const chapters = course?.courseOutput?.chapters;
+    const chapters = course?.courseOutput.chapters;
 
     const chapterPromises = chapters?.map(async (chapter, index) => {
       const PROMPT = `
         Explain the concepts in detail on Topic: ${course?.courseName},
-        Chapter: ${chapter.chapter_name},
-        in JSON Format with list of array having fields:
-        - title
-        - explanation (detailed)
-        - code examples (in <precode> format if applicable)
+        Chapter: ${chapter.chapter_name}.
+        Return JSON array with:
+        [
+          { "title": "string", "explanation": "detailed explanation", "code": "<precode>optional</precode>" }
+        ]
       `;
 
       try {
-        const query = `${course.courseName}: ${chapter.chapter_name}`;
+        const query = `${course!.courseName}: ${chapter.chapter_name}`;
 
-        // ✅ Fetch related YouTube videos
+        // ✅ Fetch video for this chapter
         const resp = await getYoutubeVideos(query);
-        console.log("🎥 Videos fetched:", resp);
+        const videoId = resp?.[0]?.id?.videoId || "";
 
-        const videoId = resp?.[0]?.id?.videoId || null;
-
-        // ✅ Call AI model function directly (not .sendMessage)
+        // ✅ Fixed: call function directly, not .sendMessage()
         const result = await generateCourseChapters(course.courseName, chapter.chapter_name);
+        const content = JSON.parse(result);
 
-        // ✅ Try to parse JSON (fallback to raw text)
-        let content;
-        try {
-          content = JSON.parse(result);
-        } catch {
-          content = { text: result };
-        }
-
-        // ✅ Insert each chapter into DB
+        // ✅ Store into database
         await db.insert(CourseChapters).values({
           chapterId: index,
           courseId: course.courseId,
-          content: content,
-          videoId: videoId,
+          content,
+          videoId,
         });
-
-        console.log(`✅ Chapter ${index + 1} saved successfully`);
       } catch (error) {
-        console.error(`❌ Error processing chapter ${index + 1}:`, error);
+        console.error(`Error generating chapter ${index}:`, error);
       }
     });
 
     await Promise.all(chapterPromises || []);
-    console.log("🎉 All chapters generated successfully!");
   } catch (error) {
-    console.error("❌ Error generating course content:", error);
+    console.error("Error in generateCourseContent:", error);
   } finally {
     setLoading(false);
   }

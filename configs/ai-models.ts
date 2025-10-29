@@ -1,14 +1,12 @@
 import {
   GoogleGenerativeAI,
-  HarmCategory,
-  HarmBlockThreshold,
 } from "@google/generative-ai";
 import { Env } from "./BaseEnvironment";
 
-// ✅ Initialize the Gemini model
+// ✅ Initialize Gemini model with your key
 const genAI = new GoogleGenerativeAI(Env.GOOGLE_GEMINI_API_KEY);
 
-// ✅ FIX: Use correct Gemini model name
+// ✅ Use correct model version
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
 // ✅ Helper function for generating AI responses
@@ -22,7 +20,7 @@ export async function generateAIResponse(prompt: string): Promise<string> {
   }
 }
 
-// ✅ Generate the overall course layout
+// ✅ Generate a course layout
 export async function generateCourseLayout(topic: string): Promise<string> {
   const prompt = `
 You are an educational course designer.
@@ -31,8 +29,9 @@ The layout should include:
 - Course title
 - Short description
 - 5-7 major chapters
-- Each chapter name should be descriptive and educational.
-Return only in clean JSON like:
+Each chapter name should be descriptive and educational.
+
+Return only in clean JSON format:
 {
   "title": "...",
   "description": "...",
@@ -42,35 +41,36 @@ Return only in clean JSON like:
   return await generateAIResponse(prompt);
 }
 
-// ✅ Generate course chapters with content
+// ✅ Generate detailed chapter content
 export async function generateCourseChapters(
   topic: string,
   chapterTitle: string
 ): Promise<string> {
   const prompt = `
 You are an AI teaching assistant.
-Generate detailed educational content for the chapter: "${chapterTitle}"
-from the course on "${topic}".
+Generate detailed educational content for the chapter "${chapterTitle}"
+in the course on "${topic}".
 
 Include:
-- A short intro paragraph
-- 3-5 subtopics with explanations
+- Short intro
+- 3–5 subtopics with explanations
 - Practical examples
-- A short summary or key takeaways.
+- Summary or key takeaways
 
-Output in a neat structured format (not code).
+Format neatly, no code blocks.
 `;
   return await generateAIResponse(prompt);
 }
 
-// ✅ Generate quiz questions for a topic
+// ✅ Generate quiz questions
 export async function generateQuizQuestions(topic: string): Promise<string> {
   const prompt = `
-Create 5 multiple choice questions for the topic "${topic}".
-Each should include 4 options and the correct answer.
+Create 5 multiple-choice questions for the topic "${topic}".
+Each question should have 4 options and specify the correct answer.
+
 Format clearly.
 `;
   return await generateAIResponse(prompt);
 }
 
-console.log("✅ AI Models loaded successfully");
+console.log("✅ Gemini AI Model initialized successfully");

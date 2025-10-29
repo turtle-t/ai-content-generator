@@ -1,22 +1,24 @@
-import {
-  GoogleGenerativeAI,
-} from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Env } from "./BaseEnvironment";
 
 // ✅ Initialize Gemini model with your key
 const genAI = new GoogleGenerativeAI(Env.GOOGLE_GEMINI_API_KEY);
 
-// ✅ Use correct model version
+// ✅ Use correct model version (no -latest)
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // ✅ Helper function for generating AI responses
 export async function generateAIResponse(prompt: string): Promise<string> {
   try {
     const result = await model.generateContent(prompt);
-    return result.response.text();
-  } catch (error) {
+    const text = result.response.text();
+    return JSON.stringify({ success: true, result: text });
+  } catch (error: any) {
     console.error("AI generation error:", error);
-    return "⚠️ Sorry, I couldn't generate the response.";
+    return JSON.stringify({
+      success: false,
+      error: error.message || "AI generation failed",
+    });
   }
 }
 
